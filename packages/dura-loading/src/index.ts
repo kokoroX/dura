@@ -1,12 +1,15 @@
+import entries from 'lodash/entries';
+import keys from 'lodash/keys';
+import merge from 'lodash/merge';
+
 /**
  * 自动loading
  */
-import { ModelMap, EffectApi, ExcludeTypeAction, Plugin, EffectMap } from "@dura/types";
-import entries from "lodash/entries";
-import keys from "lodash/keys";
-import merge from "lodash/merge";
+import { EffectApi, EffectMap, ExcludeTypeAction, ModelMap, Plugin } from '@dura/types';
 
-export const createLoadingPlugin = function<MM extends ModelMap>(modelMap: MM): Plugin {
+export const createLoadingPlugin = function<MM extends ModelMap>(
+  modelMap: MM
+): Plugin {
   const initialState = entries(modelMap)
     .map(([modelName, model]) => ({
       [modelName]: keys(model.effects)
@@ -47,7 +50,9 @@ export const createLoadingPlugin = function<MM extends ModelMap>(modelMap: MM): 
               }
             });
 
-        if (action.meta && action.meta.loading) {
+        if (action.meta && action.meta.notLoading) {
+          await effect(effectApi, action);
+        } else {
           try {
             start();
             await effect(effectApi, action);
@@ -56,8 +61,6 @@ export const createLoadingPlugin = function<MM extends ModelMap>(modelMap: MM): 
             end();
             throw error;
           }
-        } else {
-          await effect(effectApi, action);
         }
       };
     },
@@ -68,17 +71,37 @@ export const createLoadingPlugin = function<MM extends ModelMap>(modelMap: MM): 
           startLoading(state: State, action: StartLoadingAction) {
             return {
               ...state,
+              global: true,
+              models: { [action.payload.modelName]: true },
               [action.payload.modelName]: {
                 [action.payload.effectName]: true
               }
             };
           },
           endLoading(state: State, action: EndLoadingAction) {
-            return {
-              ...state,
+            const existEffects = state.effects || {};
+            const effects = {
+              ...existEffects,
               [action.payload.modelName]: {
+                ...existEffects[action.payload.modelName],
                 [action.payload.effectName]: false
               }
+            };
+            const models = {
+              ...state.models,
+              [action.payload.modelName]: Object.keys(
+                effects[action.payload.modelName]
+              ).some(effectName => {
+                return effects[effectName];
+              })
+            };
+            const global = Object.keys(models).some(namespace => {
+              return models[namespace];
+            });
+            return {
+              global,
+              models,
+              effects
             };
           }
         },

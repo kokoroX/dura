@@ -1,4 +1,4 @@
-import chain from 'lodash/chain';
+// import chain from 'lodash/chain';
 import entries from 'lodash/entries';
 import get from 'lodash/get';
 import keys from 'lodash/keys';
@@ -77,17 +77,6 @@ export const createLoadingPlugin = function <MM extends ModelMap>(
               effectName: string;
             }
           ) {
-            /**
-             *
-          },
-          endLoading(state: State, action: EndLoadingAction) {
-            const existEffects = state.effects || {};
-            const effects = {
-              ...existEffects,
-              [action.payload.modelName]: {
-                ...existEffects[action.payload.modelName],
-                [action.payload.effectName]: false
-             */
             return {
               ...state,
               global: true,

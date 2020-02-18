@@ -1,11 +1,6 @@
 {
-<<<<<<< HEAD
   "name": "kokoro-dura-loading",
-  "version": "2.1.5",
-=======
-  "name": "@dura/loading",
   "version": "3.3.1",
->>>>>>> 76f1bd036cc2af12f6d2b66d03e87a80d1f4d2b5
   "description": "",
   "main": "./lib/index.js",
   "publishConfig": {

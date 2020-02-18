@@ -1,8 +1,9 @@
-import CountModel from "../models/CountModel";
+import CountModel from '../models/CountModel';
 
-import { create, ExtractState } from "@dura/plus";
-import { createImmerPlugin } from "@dura/immer";
-import { ExtractLoadingState, createLoadingPlugin } from "@dura/loading";
+import { create, ExtractState } from '@dura/plus';
+import { createImmerPlugin } from '@dura/immer';
+import { ExtractLoadingState, createLoadingPlugin } from '@dura/loading';
+import createAction from '@dura/actions';
 
 const initialModel = {
   count: CountModel
@@ -10,7 +11,8 @@ const initialModel = {
 
 export type RootModel = typeof initialModel;
 
-export type RootState = ExtractState<RootModel> & ExtractLoadingState<RootModel>;
+export type RootState = ExtractState<RootModel> &
+  ExtractLoadingState<RootModel>;
 
 export const store = create(
   {
@@ -22,4 +24,6 @@ export const store = create(
   }
 );
 
-export const { actionCreator } = store;
+const actionCreator = createAction(initialModel);
+
+export { actionCreator };

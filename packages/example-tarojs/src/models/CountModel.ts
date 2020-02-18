@@ -1,5 +1,4 @@
-import { EffectApi } from "@dura/plus";
-import { actionCreator } from "../store/index";
+import { actionCreator } from '../store/index';
 
 const initialState = {
   count: 0 as number
@@ -8,19 +7,19 @@ const initialState = {
 type State = typeof initialState;
 
 export default {
-  state: initialState,
-  reducers: {
-    onChangeCount(state: State, action: { payload: { count: number } }): State {
-      return { ...state, count: state.count + action.payload.count };
+  state: () => initialState,
+  reducers: () => ({
+    onChangeCount(state: State, payload: { count: number }) {
+      return { ...state, count: state.count + payload.count };
     }
-  },
-  effects: {
+  }),
+  effects: (dispatch, getState, delay) => ({
     async onAsyncChangeCount(
-      effectApi: EffectApi,
-      action: { payload: { count: number }; meta?: { loading: boolean } }
+      payload: { count: number },
+      meta?: { loading: boolean }
     ) {
-      await effectApi.delay(2000);
-      effectApi.dispatch(actionCreator.count.onChangeCount(action.payload));
+      await delay(2000);
+      dispatch(actionCreator.count.onChangeCount(payload));
     }
-  }
+  })
 };

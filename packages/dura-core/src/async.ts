@@ -1,42 +1,24 @@
 import { ModelMap, Model } from "@dura/types";
-import keys from "lodash/keys";
-import merge from "lodash/merge";
-import cloneDeep from "lodash/cloneDeep";
 import { delay } from "./util";
+import produce from "immer";
 
-export default function getAsyncMiddleware(rootModel: ModelMap) {
-  const rootEffects = keys(rootModel)
-    .map((name: string) => extractEffects(name, rootModel[name]))
-    .reduce(merge, {});
-  return store => next => async action => {
+export default function getAsyncMiddleware(rootModel: ModelMap, error) {
+  return store => next => action => {
     let result = next(action);
-    if (typeof rootEffects[action.type] === "function") {
-      const dispatch = store.dispatch;
-      const getState = () => cloneDeep(store.getState());
-      const select = (_select: (state) => any) => _select(getState());
-      //执行effect
-      const effect = rootEffects[action.type];
-      await effect(
-        {
-          dispatch,
-          select,
+
+    const [namespace, nameeffect] = action.type.split("/");
+
+    if (rootModel[namespace]) {
+      rootModel?.[namespace]
+        ?.effects(
+          store.dispatch,
+          () => store.getState(),
           delay
-        },
-        action
-      );
+        )
+        ?.[nameeffect]?.(action?.payload, action?.meta)
+        ?.catch(error);
     }
+
     return result;
   };
-}
-
-/**
- * 提取effects
- * @param name
- * @param model
- */
-function extractEffects(name: string, model: Model<any>) {
-  const { effects } = model;
-  return keys(effects)
-    .map((effectName: string) => ({ [`${name}/${effectName}`]: effects[effectName] }))
-    .reduce(merge, {});
 }

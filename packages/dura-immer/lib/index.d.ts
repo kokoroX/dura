@@ -1,2 +1,2 @@
-import { Plugin } from "@dura/types";
+import { Plugin } from '@dura/types';
 export declare const createImmerPlugin: () => Plugin;

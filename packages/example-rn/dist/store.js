@@ -1,8 +1,11 @@
-import UserModel from "./models/UserModel";
-import RouterModel from "./models/RouterModel";
-import { create } from "@dura/plus";
-import { createImmerPlugin } from "@dura/immer";
-import { createLoadingPlugin } from "@dura/loading";
+import UserModel from './models/UserModel';
+import RouterModel from './models/RouterModel';
+import { create } from '@dura/plus';
+import { createImmerPlugin } from '@dura/immer';
+import { createLoadingPlugin } from '@dura/loading';
+import createAction from '@dura/actions';
+import { isEqual } from 'lodash';
+import { connect } from 'react-redux';
 const initialModel = {
     /**
      * 用户模块1
@@ -10,11 +13,45 @@ const initialModel = {
     user: UserModel,
     router: RouterModel
 };
-export const store = create({
-    initialModel: initialModel,
-    compose: window["__REDUX_DEVTOOLS_EXTENSION_COMPOSE__"]
-}, {
-    immer: createImmerPlugin(),
-    loading: createLoadingPlugin(initialModel)
-});
-export const { actionCreator } = store;
+let error = [];
+export const store = window['__REDUX_DEVTOOLS_EXTENSION_COMPOSE__']
+    ? create({
+        initialModel: initialModel,
+        compose: window['__REDUX_DEVTOOLS_EXTENSION_COMPOSE__'],
+        middlewares: [
+            store => next => action => {
+                error.push(action);
+                next(action);
+            }
+        ],
+        error: e => {
+            console.log(JSON.stringify(error));
+        }
+    }, {
+        immer: createImmerPlugin(),
+        loading: createLoadingPlugin(initialModel)
+    })
+    : create({
+        initialModel: initialModel,
+        middlewares: [
+            store => next => action => {
+                error.push(action);
+                next(action);
+            }
+        ],
+        error: e => {
+            console.log(JSON.stringify(error));
+        }
+    }, {
+        immer: createImmerPlugin(),
+        loading: createLoadingPlugin(initialModel)
+    });
+export const actionCreator = createAction(initialModel);
+export const connectHOC = function (mapState, mapDispatch) {
+    return connect(mapState, mapDispatch, null, {
+        areStatesEqual: isEqual,
+        areOwnPropsEqual: isEqual,
+        areStatePropsEqual: isEqual,
+        areMergedPropsEqual: isEqual
+    });
+};

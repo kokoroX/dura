@@ -1,6 +1,6 @@
 {
   "name": "@dura/types",
-  "version": "2.1.4",
+  "version": "3.2.0",
   "types": "./src/typeing.d.ts",
   "typings": "./src/typeing.d.ts",
   "publishConfig": {
@@ -12,9 +12,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@types/redux": "^3.6.0"
+    "utility-types": "3.7.0"
   },
   "main": "index.js",
-  "description": "",
-  "gitHead": "ffc6babfbc78e956291dc1835054b2fb384b2fcf"
+  "description": ""
 }

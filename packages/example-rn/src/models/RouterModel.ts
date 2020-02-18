@@ -1,26 +1,13 @@
-import { EffectApi } from "@dura/plus";
-import { actionCreator } from "../store";
-
-
-const initialState = {
-  
-};
+const initialState = {};
 
 type State = typeof initialState;
 
 export default {
-  state: initialState,
-  reducers: {
-    
-  },
-  effects: {
-    async pushUserPage(effectApi,action:{
-        payload:{
-            navigation:any
-        }
-    }){
-        console.log(action.payload.navigation)
-        action.payload.navigation.push('User')
-    } 
-  }
+  state: () => initialState,
+  reducers: () => ({}),
+  effects: () => ({
+    async pushUserPage(payload: { navigation: any }) {
+      payload.navigation.push('User');
+    }
+  })
 };

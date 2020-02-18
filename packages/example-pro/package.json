@@ -1,16 +1,21 @@
 {
   "name": "example-pro",
-  "version": "2.1.5",
+  "version": "3.3.1",
   "description": "",
   "private": true,
   "main": "index.js",
   "author": "",
   "license": "ISC",
+  "scripts": {
+    "start": "./node_modules/webpack-dev-server/bin/webpack-dev-server.js"
+  },
   "dependencies": {
-    "@dura/immer": "^2.1.5",
-    "@dura/loading": "^2.1.5",
-    "@dura/plus": "^2.1.5",
+    "@dura/actions": "^3.3.1",
+    "@dura/immer": "^3.3.1",
+    "@dura/loading": "^3.3.1",
+    "@dura/plus": "^3.3.1",
     "antd": "^3.13.0",
+    "lodash": "^4.17.15",
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
     "react-redux": "^6.0.0",

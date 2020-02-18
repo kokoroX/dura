@@ -1,21 +1,21 @@
-import { create } from "../src/index";
+import { create } from '../src/index';
 
 function getUserModel() {
   return {
-    state: {
+    state: () => ({
       name: undefined
-    },
-    reducers: {
-      onChangeName(state, action: { payload: { newName: string } }) {
-        return { ...state, name: action.payload.newName };
+    }),
+    reducers: () => ({
+      onChangeName(state, payload: { newName: string }) {
+        return { ...state, name: payload.newName };
       }
-    },
-    effects: {}
+    }),
+    effects: () => ({})
   };
 }
 
-describe("测试配置信息", function() {
-  it("测试initialModel", function() {
+describe('测试配置信息', function() {
+  it('测试initialModel', function() {
     const store = create({
       initialModel: {
         user: getUserModel()
@@ -25,15 +25,15 @@ describe("测试配置信息", function() {
     expect(store.getState().user.name).toBeUndefined();
   });
 
-  it("测试额外的reducers", function() {
+  it('测试额外的reducers', function() {
     const store = create({
       initialModel: {
         user: getUserModel()
       },
       extraReducers: {
-        router: function(state = { path: "/home" }, action) {
+        router: function(state = { path: '/home' }, action) {
           switch (action.type) {
-            case "changePath":
+            case 'changePath':
               return { ...state, path: action.payload.path };
             default:
               return state;
@@ -42,62 +42,69 @@ describe("测试配置信息", function() {
       }
     });
 
-    expect(store.getState()["router"]).toEqual({ path: "/home" });
+    expect(store.getState()['router']).toEqual({ path: '/home' });
 
     store.dispatch({
-      type: "changePath",
+      type: 'changePath',
       payload: {
-        path: "/user"
+        path: '/user'
       }
     });
 
-    expect(store.getState()["router"]).toEqual({ path: "/user" });
+    expect(store.getState()['router']).toEqual({ path: '/user' });
   });
 
-  it("测试initialState", function() {
+  it('测试initialState', function() {
     const store = create({
       initialModel: {
         user: getUserModel()
       },
       initialState: {
         user: {
-          name: "张三"
+          name: '张三'
         }
       }
     });
 
-    expect(store.getState().user.name).toEqual("张三");
+    expect(store.getState().user.name).toEqual('张三');
   });
 
-  it("测试传入中间件", function() {
+  it('测试传入中间件', function() {
     const rootModel = {
       user: getUserModel()
     };
 
     const store = create({
       initialModel: rootModel,
-      middlewares: [store => next => action => next({ ...action, type: "h" })]
+      middlewares: [store => next => action => next({ ...action, type: 'h' })]
     });
 
-    const { dispatch, getState, actionCreator } = store;
+    const { dispatch, getState } = store;
 
     expect(getState().user.name).toBeUndefined();
 
-    dispatch(actionCreator.user.onChangeName({ newName: "张三" }));
+    dispatch({
+      type: 'user/onChangeName',
+      payload: {
+        newName: '张三'
+      }
+    });
 
     expect(getState().user.name).toBeUndefined();
   });
 
-  it("测试传入compose", function() {
+  it('测试传入compose', function() {
     const storeCreator = () =>
       create({
         initialModel: {
           user: getUserModel()
         },
-        middlewares: [store => next => action => next({ ...action, type: "h" })],
+        middlewares: [
+          store => next => action => next({ ...action, type: 'h' })
+        ],
         compose: function(...funcs) {
           if (1 == 1) {
-            throw "异常";
+            throw '异常';
           }
 
           if (funcs.length === 0) {
@@ -112,10 +119,10 @@ describe("测试配置信息", function() {
         }
       });
 
-    expect(() => storeCreator()).toThrow("异常");
+    expect(() => storeCreator()).toThrow('异常');
   });
 
-  it("测试传入createStore", function() {
+  it('测试传入createStore', function() {
     const store = create({
       initialModel: {
         user: getUserModel()

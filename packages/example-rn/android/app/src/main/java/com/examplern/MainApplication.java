@@ -3,6 +3,13 @@ package com.examplern;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.oblador.vectoricons.VectorIconsPackage;
+import com.airbnb.android.react.lottie.LottiePackage;
+import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
+import com.rnfs.RNFSPackage;
+import com.zmxv.RNSound.RNSoundPackage;
+import com.goodatlas.audiorecord.RNAudioRecordPackage;
+import com.rnim.rn.audio.ReactNativeAudioPackage;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
@@ -24,6 +31,13 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new VectorIconsPackage(),
+            new LottiePackage(),
+            new AsyncStoragePackage(),
+            new RNFSPackage(),
+            new RNSoundPackage(),
+            new RNAudioRecordPackage(),
+            new ReactNativeAudioPackage(),
             new RNGestureHandlerPackage()
       );
     }

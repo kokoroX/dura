@@ -1,49 +1,50 @@
-import { create } from "../src";
+import { create } from "../src/index";
+import createActions from "@dura/actions";
 
 describe("测试plus", function() {
   it("测试插件额外的model", function() {
     const UserModel = {
-      state: {
+      state: () => ({
         name: undefined
-      },
-      reducers: {
+      }),
+      reducers: () => ({
         onChangeLoad(state, action) {
           return state;
         }
-      },
-      effects: {
+      }),
+      effects: (dispatch, getState, delay) => ({
         async onAsyncChangeName(effectApi, action) {}
-      }
+      })
     };
 
     const plugins = {
       loading: {
         extraModel: {
           loading: {
-            state: {
+            state: () => ({
               name: "测试loading"
-            },
-            reducers: {
+            }),
+            reducers: () => ({
               loadingChange(state, action) {
                 return state;
               }
-            },
-            effects: {}
+            }),
+            effects: () => ({})
           }
         }
       },
       immer: {
         extraModel: {
           immer: {
-            state: {
+            state: () => ({
               name: "测试immer"
-            },
-            reducers: {
+            }),
+            reducers: () => ({
               immerChange(state, action) {
                 return state;
               }
-            },
-            effects: {}
+            }),
+            effects: () => ({})
           }
         }
       }
@@ -61,33 +62,33 @@ describe("测试plus", function() {
   });
   it("测试插件", function() {
     const UserModel = {
-      state: {
+      state: () => ({
         name: undefined
-      },
-      reducers: {
+      }),
+      reducers: () => ({
         onChangeLoad(state, action) {
           return state;
         }
-      },
-      effects: {
-        async onAsyncChangeName(effectApi, action) {}
-      }
+      }),
+      effects: () => ({
+        async onAsyncChangeName() {}
+      })
     };
 
     const StudentModel = {
-      state: {
+      state: () => ({
         name: undefined
-      },
-      reducers: {
+      }),
+      reducers: () => ({
         onChangeLoad(state, action) {
           return state;
         }
-      },
-      effects: {
-        async onAsyncChangeStudentName(effectApi, action) {
+      }),
+      effects: () => ({
+        async onAsyncChangeStudentName() {
           console.log("StudentModel-effects");
         }
-      }
+      })
     };
 
     const store = create(
@@ -102,7 +103,7 @@ describe("测试plus", function() {
           onReducer: (modelName, reducerName, reducer) => {
             return (state, action) => {
               console.log("开始");
-              const result = reducer(state, action);
+              const result = reducer(state, action.payload, action.meta);
               console.log("结束");
               return result;
             };
@@ -121,7 +122,7 @@ describe("测试plus", function() {
           onReducer: (modelName, reducerName, reducer) => {
             return (state, action) => {
               console.log("开始1");
-              const result = reducer(state, action);
+              const result = reducer(state, action.payload, action.meta);
               console.log("结束1");
               return result;
             };
@@ -138,23 +139,27 @@ describe("测试plus", function() {
         }
       }
     );
+    const actionCreator = createActions({
+      user: UserModel,
+      student: StudentModel
+    });
 
-    store.dispatch(store.actionCreator.student.onAsyncChangeStudentName({}, {}));
+    store.dispatch(actionCreator.student.onAsyncChangeStudentName());
   });
 
   it("不传任何插件", function() {
     const UserModel = {
-      state: {
+      state: () => ({
         name: undefined
-      },
-      reducers: {
+      }),
+      reducers: () => ({
         onChangeLoad(state, action) {
           return state;
         }
-      },
-      effects: {
+      }),
+      effects: () => ({
         async onAsyncChangeName(effectApi, action) {}
-      }
+      })
     };
 
     const store = create({

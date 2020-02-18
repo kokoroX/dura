@@ -1,6 +1,6 @@
 {
   "name": "@dura/core",
-  "version": "2.1.5",
+  "version": "3.3.1",
   "description": "",
   "main": "./lib/index.js",
   "publishConfig": {
@@ -14,15 +14,13 @@
       "^.+\\.js?$": "babel-jest"
     }
   },
-  "author": "",
+  "author": "ityuany",
   "license": "ISC",
   "dependencies": {
-    "redux": "^4.0.0",
-    "redux-actions": "^2.6.4"
+    "immer": "5.1.0",
+    "redux": "4.0.4"
   },
   "devDependencies": {
-    "@dura/types": "^2.1.4",
-    "@types/redux": "^3.6.0"
-  },
-  "gitHead": "ffc6babfbc78e956291dc1835054b2fb384b2fcf"
+    "@dura/types": "^3.2.0"
+  }
 }

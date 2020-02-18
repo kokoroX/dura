@@ -1,1 +1,2 @@
-export * from "./store";
+import { create } from './store';
+export { create };

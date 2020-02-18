@@ -1,1 +1,1 @@
-export declare function delay(ms: number): Promise<{}>;
+export declare function delay(ms: number): Promise<unknown>;

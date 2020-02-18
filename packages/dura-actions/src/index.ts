@@ -1,10 +1,9 @@
-import { ModelMap, Model } from "@dura/types";
+import { ModelMap, Model, ExtractActions } from "@dura/types";
 import keys from "lodash/keys";
 import merge from "lodash/merge";
 import cloneDeep from "lodash/cloneDeep";
-import { createAction } from "redux-actions";
 
-export default function extractActions<RM extends ModelMap>(models: RM) {
+export default function<RM extends ModelMap>(models: RM): ExtractActions<RM> {
   return keys(models)
     .map((name: string) => extractAction(name, models[name]))
     .reduce(merge, {});
@@ -13,9 +12,13 @@ export default function extractActions<RM extends ModelMap>(models: RM) {
 function extractAction(name: string, model: Model<any>) {
   const { reducers, effects } = cloneDeep(model);
   return {
-    [name]: keys(merge(reducers, effects))
+    [name]: keys(merge(reducers(), effects()))
       .map((reducerKey: string) => ({
-        [reducerKey]: createAction(`${name}/${reducerKey}`, payload => payload, (payload, meta) => meta)
+        [reducerKey]: (payload, meta) => ({
+          type: `${name}/${reducerKey}`,
+          payload,
+          meta
+        })
       }))
       .reduce(merge, {})
   };

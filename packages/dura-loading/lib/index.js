@@ -50,10 +50,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+// import chain from 'lodash/chain';
 var entries_1 = __importDefault(require("lodash/entries"));
+var get_1 = __importDefault(require("lodash/get"));
 var keys_1 = __importDefault(require("lodash/keys"));
 var merge_1 = __importDefault(require("lodash/merge"));
-var get_1 = __importDefault(require("lodash/get"));
 exports.createLoadingPlugin = function (modelMap) {
     var _this = this;
     var initialState = entries_1.default(modelMap)
@@ -100,26 +101,24 @@ exports.createLoadingPlugin = function (modelMap) {
                                                     }
                                                 });
                                             };
-                                            if (!(meta && meta.loading)) return [3 /*break*/, 5];
-                                            _a.label = 1;
+                                            if (!(meta && meta.notLoading)) return [3 /*break*/, 2];
+                                            return [4 /*yield*/, v(payload, meta)];
                                         case 1:
-                                            _a.trys.push([1, 3, , 4]);
+                                            _a.sent();
+                                            return [3 /*break*/, 5];
+                                        case 2:
+                                            _a.trys.push([2, 4, , 5]);
                                             start();
                                             return [4 /*yield*/, v(payload, meta)];
-                                        case 2:
+                                        case 3:
                                             _a.sent();
                                             end();
-                                            return [3 /*break*/, 4];
-                                        case 3:
+                                            return [3 /*break*/, 5];
+                                        case 4:
                                             error_1 = _a.sent();
                                             end();
                                             throw error_1;
-                                        case 4: return [3 /*break*/, 7];
-                                        case 5: return [4 /*yield*/, v(payload, meta)];
-                                        case 6:
-                                            _a.sent();
-                                            _a.label = 7;
-                                        case 7: return [2 /*return*/];
+                                        case 5: return [2 /*return*/];
                                     }
                                 });
                             }); },
@@ -133,16 +132,26 @@ exports.createLoadingPlugin = function (modelMap) {
                 state: function () { return initialState; },
                 reducers: function () { return ({
                     startLoading: function (state, payload) {
-                        var _a, _b;
-                        return __assign(__assign({}, state), (_a = {}, _a[payload.modelName] = (_b = {},
-                            _b[payload.effectName] = true,
-                            _b), _a));
+                        var _a, _b, _c;
+                        return __assign(__assign({}, state), (_a = { global: true, models: (_b = {}, _b[payload.modelName] = true, _b) }, _a[payload.modelName] = (_c = {},
+                            _c[payload.effectName] = true,
+                            _c), _a));
                     },
                     endLoading: function (state, payload) {
-                        var _a, _b;
-                        return __assign(__assign({}, state), (_a = {}, _a[payload.modelName] = (_b = {},
-                            _b[payload.effectName] = false,
-                            _b), _a));
+                        var _a, _b, _c;
+                        var existEffects = state.effects || {};
+                        var effects = __assign(__assign({}, existEffects), (_a = {}, _a[payload.modelName] = __assign(__assign({}, existEffects[payload.modelName]), (_b = {}, _b[payload.effectName] = false, _b)), _a));
+                        var models = __assign(__assign({}, state.models), (_c = {}, _c[payload.modelName] = Object.keys(effects[payload.modelName]).some(function (effectName) {
+                            return effects[effectName];
+                        }), _c));
+                        var global = Object.keys(models).some(function (namespace) {
+                            return models[namespace];
+                        });
+                        return {
+                            global: global,
+                            models: models,
+                            effects: effects
+                        };
                     }
                 }); },
                 effects: function () { return ({}); }

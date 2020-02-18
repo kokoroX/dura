@@ -3,6 +3,7 @@
   "version": "3.3.1",
   "description": "",
   "main": "./lib/index.js",
+  "files": ["lib"],
   "publishConfig": {
     "access": "public"
   },
@@ -16,6 +17,7 @@
     "@dura/plus": "^3.3.1"
   },
   "dependencies": {
-    "@dura/types": "^3.2.0"
+    "@dura/types": "^3.2.0",
+    "lodash": "^4.17.15"
   }
 }

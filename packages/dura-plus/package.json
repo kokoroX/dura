@@ -1,8 +1,11 @@
 {
-  "name": "@dura/plus",
+  "name": "@kokoro/dura-plus",
   "version": "3.3.1",
   "description": "",
   "main": "./lib/index.js",
+  "files": [
+    "lib"
+  ],
   "publishConfig": {
     "access": "public"
   },
@@ -14,6 +17,7 @@
   "dependencies": {
     "@dura/actions": "^3.3.1",
     "@dura/core": "^3.3.1",
-    "@dura/types": "^3.2.0"
+    "@dura/types": "^3.2.0",
+    "lodash": "^4.17.15"
   }
 }

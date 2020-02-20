@@ -1,5 +1,5 @@
 {
-  "name": "kokoro-dura-loading",
+  "name": "@kokoro/dura-loading",
   "version": "3.3.1",
   "description": "",
   "main": "./lib/index.js",
